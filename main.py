@@ -20,6 +20,8 @@ import webapp2
 import tweepy
 import re
 import setting
+import urllib
+import logging
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
@@ -35,10 +37,21 @@ def get_api():
     auth.set_access_token(setting.token,setting.token_secret)
     return tweepy.API(auth_handler=auth)
 def get_user_word(api):
-    tl=api.user_timeline(id="__whats")
+    tl=api.user_timeline(id="__whats",count=200)
     s=""
     for t in tl:
-        s+=t.text+"<br>"
+        s+=t.text
     r=re.compile('@\w*')
     ss=re.sub(r,"",s)
-    return ss
+    yahoo_url="http://jlp.yahooapis.jp/KeyphraseService/V1/extract?"
+#    yahoo_url="http://jlp.yahooapis.jp/MAService/V1/parse?"
+#    yahoo_url="http://jlp.yahooapis.jp/KouseiService/V1/kousei?"
+    query={
+    "sentence":ss,
+#    "results":"uniq",
+    "appid":setting.YAHOO_APP_ID
+    }
+    param=urllib.urlencode(query)
+    result=urllib.urlopen(yahoo_url,param)
+#    logging.info(urllib.urlencode(query))
+    return result.read()
