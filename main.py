@@ -30,8 +30,10 @@ class MainHandler(webapp2.RequestHandler):
     def get(self):
         contents={}
         api=get_api()
-        contents["keys"]=get_user_word(api)
-
+        tl=api.user_timeline(id="__whats",count=200)
+        contents["keys"]=get_user_word(tl)
+        contents["kousei"]=get_user_kousei(tl)
+        contents["user"]=tl[0].user
 #        self.response.out.write(ss)
         path = os.path.join(os.path.dirname(__file__), 'tmpl/base.html')
         self.response.out.write(template.render(path, contents))
@@ -42,8 +44,7 @@ def get_api():
     auth = tweepy.OAuthHandler(setting.CONSUMER_KEY,setting.CONSUMER_SECRET)
     auth.set_access_token(setting.token,setting.token_secret)
     return tweepy.API(auth_handler=auth)
-def get_user_word(api):
-    tl=api.user_timeline(id="__whats",count=200)
+def get_user_word(tl):
     s=""
     for t in tl:
         s+=t.text
@@ -63,4 +64,30 @@ def get_user_word(api):
     li=[]
     for item in soup.findAll("result"):
         li.append({"key":item.find("keyphrase").string,"score":item.find("score").string})
+    return li
+def get_user_kousei(tl):
+    #yahooの校正支援APIから
+    #　http://developer.yahoo.co.jp/webapi/jlp/kousei/v1/kousei.html
+    s=""
+    for t in tl:
+        s+=t.text
+    r=re.compile('@\w*')
+    ss=re.sub(r,"",s)
+
+    yahoo_url="http://jlp.yahooapis.jp/KouseiService/V1/kousei?"
+    query={
+        "sentence":ss,
+        "appid":setting.YAHOO_APP_ID,
+        "no_filter":"5,11,12,15"
+    }
+    param=urllib.urlencode(query)
+    result=urllib.urlopen(yahoo_url,param)
+    xml=result.read()
+    soup = BeautifulSoup(xml)
+    li=[]
+    for item in soup.findAll("result"):
+        li.append({"surface":item.find("surface").string,
+                   "word":item.find("shitekiword").string,
+                   "info":item.find("shitekiinfo").string,
+                   })
     return li

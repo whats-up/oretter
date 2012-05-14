@@ -5,11 +5,27 @@
     <title>oretter</title>
 </head>
 <body>
-<h3>キーフレーズ抽出結果</h3>
+<h3>
+    <a href="https://twitter.com/#!/{{user.screen_name}}">{{user.screen_name}} / {{user.name}}
+    </a>
+    のキーフレーズ抽出結果
+</h3>
+
 <ul>
     {%for k in keys%}
     <li>
         {{k.score}} :{{k.key}}
+    </li>
+    {%endfor%}
+</ul>
+<h3>校正</h3>
+<ul>
+    {%for k in kousei|dictsort:"info" %}
+    <li>
+        {{k.info}} :
+        {%if k.word%}×{%endif%}
+        {{k.surface}}
+        {%if k.word%}({{k.word}}){%endif%}
     </li>
     {%endfor%}
 </ul>
