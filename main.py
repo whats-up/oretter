@@ -22,6 +22,7 @@ import re
 import setting
 import urllib
 import logging
+from BeautifulSoup import BeautifulSoup
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
@@ -48,10 +49,13 @@ def get_user_word(api):
 #    yahoo_url="http://jlp.yahooapis.jp/KouseiService/V1/kousei?"
     query={
     "sentence":ss,
-#    "results":"uniq",
     "appid":setting.YAHOO_APP_ID
     }
     param=urllib.urlencode(query)
     result=urllib.urlopen(yahoo_url,param)
-#    logging.info(urllib.urlencode(query))
-    return result.read()
+    xml=result.read()
+    soup = BeautifulSoup(xml)
+    li=[]
+    for item in soup.findAll("result"):
+        li.append({"key":item.find("keyphrase").string,"score":item.find("score").string})
+    return li
