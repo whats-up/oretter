@@ -1,0 +1,17 @@
+<!DOCTYPE HTML>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>oretter</title>
+</head>
+<body>
+<h3>キーフレーズ抽出結果</h3>
+<ul>
+    {%for k in keys%}
+    <li>
+        {{k.score}} :{{k.key}}
+    </li>
+    {%endfor%}
+</ul>
+</body>
+</html>

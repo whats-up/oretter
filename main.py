@@ -23,13 +23,18 @@ import setting
 import urllib
 import logging
 from BeautifulSoup import BeautifulSoup
+import os
+from google.appengine.ext.webapp import template
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
+        contents={}
         api=get_api()
-        ss=get_user_word(api)
+        contents["keys"]=get_user_word(api)
 
-        self.response.out.write(ss)
+#        self.response.out.write(ss)
+        path = os.path.join(os.path.dirname(__file__), 'tmpl/base.html')
+        self.response.out.write(template.render(path, contents))
 
 app = webapp2.WSGIApplication([('/', MainHandler)],
                               debug=True)
