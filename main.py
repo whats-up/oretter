@@ -26,6 +26,7 @@ from BeautifulSoup import BeautifulSoup
 import os
 from google.appengine.ext.webapp import template
 
+import date_function
 class MainHandler(webapp2.RequestHandler):
     def get(self):
         contents={}
@@ -33,7 +34,9 @@ class MainHandler(webapp2.RequestHandler):
         tl=api.user_timeline(id="__whats",count=200)
         contents["keys"]=get_user_word(tl)
         contents["kousei"]=get_user_kousei(tl)
-        contents["user"]=tl[0].user
+        user=tl[0].user
+        contents["user"]=user
+        contents["user_age"]=date_function.twitter_age(user.created_at)
 #        self.response.out.write(ss)
         path = os.path.join(os.path.dirname(__file__), 'tmpl/base.html')
         self.response.out.write(template.render(path, contents))
