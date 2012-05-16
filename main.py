@@ -25,7 +25,7 @@ import logging
 from BeautifulSoup import BeautifulSoup
 import os
 from google.appengine.ext.webapp import template
-
+from test import TestHandler
 import date_function
 class MainHandler(webapp2.RequestHandler):
     def get(self):
@@ -41,8 +41,11 @@ class MainHandler(webapp2.RequestHandler):
         path = os.path.join(os.path.dirname(__file__), 'tmpl/base.html')
         self.response.out.write(template.render(path, contents))
 
-app = webapp2.WSGIApplication([('/', MainHandler)],
-                              debug=True)
+app = webapp2.WSGIApplication(
+    [
+        ('/test/', TestHandler),
+        ('/', MainHandler),
+    ],debug=True)
 def get_api():
     auth = tweepy.OAuthHandler(setting.CONSUMER_KEY,setting.CONSUMER_SECRET)
     auth.set_access_token(setting.token,setting.token_secret)
