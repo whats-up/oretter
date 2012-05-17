@@ -10,7 +10,7 @@ def twitter_age(created_at):
     now=datetime.date.today()
     max_age=now-d1
     this_age=now-created_at
-    return int(1.0*this_age.days/max_age.days*100)
+    return int(1.0*this_age.days/max_age.days*50)
 
 def main():
     print twitter_age(date)

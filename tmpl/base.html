@@ -5,11 +5,14 @@
     <title>oretter</title>
 </head>
 <body>
+<h1 id="title">oretter σ(ﾟ∀ﾟ )</h1>
 <form>
     <p>twitterのIDを入力してください：<input type="text" name="id"></p>
     <p><input type="submit" value="送信する"></p>
 </form>
+
 {%if id%}
+<hr>
 <h3>{{user.screen_name}}の詳細データ</h3>
 <p>twitter年齢 : {{user_age}}歳</p>
 <h3>
