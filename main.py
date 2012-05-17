@@ -29,18 +29,21 @@ from test import TestHandler
 import date_function
 class MainHandler(webapp2.RequestHandler):
     def get(self):
+        user_id=self.request.get("id")
         contents={}
-        api=get_api()
-        tl=api.user_timeline(id="__whats",count=200)
-        contents["keys"]=get_user_word(tl)
-        contents["kousei"]=get_user_kousei(tl)
-        user=tl[0].user
-        contents["user"]=user
-        contents["user_age"]=date_function.twitter_age(user.created_at)
-#        self.response.out.write(ss)
+        if user_id:
+            contents["id"]=user_id
+            api=get_api()
+            tl=api.user_timeline(id=user_id,count=200)
+            contents["keys"]=get_user_word(tl)
+            contents["kousei"]=get_user_kousei(tl)
+            user=tl[0].user
+            contents["user"]=user
+            contents["user_age"]=date_function.twitter_age(user.created_at)
+        else:
+            contents["id"]=None
         path = os.path.join(os.path.dirname(__file__), 'tmpl/base.html')
         self.response.out.write(template.render(path, contents))
-
 app = webapp2.WSGIApplication(
     [
         ('/test/', TestHandler),
