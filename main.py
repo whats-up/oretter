@@ -39,14 +39,19 @@ class MainHandler(webapp2.RequestHandler):
         user_id=self.request.get("id")
         contents={}
         if user_id:
-            contents["id"]=user_id
-            api=get_api()
-            tl=api.user_timeline(id=user_id,count=200)
-            contents["keys"]=get_user_word(tl)
-            contents["kousei"]=get_user_kousei(tl)
-            user=tl[0].user
-            contents["user"]=user
-            contents["user_age"]=date_function.twitter_age(user.created_at)
+            try:
+                api=get_api()
+                tl=api.user_timeline(id=user_id,count=200)
+                contents["keys"]=get_user_word(tl)
+                contents["kousei"]=get_user_kousei(tl)
+                user=tl[0].user
+                contents["user"]=user
+                contents["user_age"]=date_function.twitter_age(user.created_at)
+                contents["id"]=user_id
+            except tweepy.TweepError:
+                contents["TweepError"]="TweepError"
+            except :
+                raise
         else:
             contents["id"]=None
         path = os.path.join(os.path.dirname(__file__), 'tmpl/base.html')

@@ -40,5 +40,10 @@
     {%endfor%}
 </ul>
 {%endif%}
+{%if TweepError%}
+<h3>指定されたIDが存在しません。またはTwitterサーバが応答していません。</h3>
+{{a}}
+{%endif%}
+
 </body>
 </html>
