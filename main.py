@@ -27,6 +27,13 @@ import os
 from google.appengine.ext.webapp import template
 from test import TestHandler
 import date_function
+import sys
+stdin = sys.stdin
+stdout = sys.stdout
+reload(sys)
+sys.setdefaultencoding('utf-8')
+sys.stdin = stdin
+sys.stdout = stdout
 class MainHandler(webapp2.RequestHandler):
     def get(self):
         user_id=self.request.get("id")
